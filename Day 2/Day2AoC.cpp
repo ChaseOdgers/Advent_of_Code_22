@@ -2,9 +2,12 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <chrono>
+using namespace std::chrono;
 
 int main(){
- 
+
+    auto start = high_resolution_clock::now();
     std::ifstream inFile;
     inFile.open("p2_Input.txt");
     std::ofstream outFile;
@@ -60,5 +63,19 @@ int main(){
                 total += 7;
             }
         }
-        outFile<<"Total: "<<total<<"\n";
+
+    //Print Results    
+    // outFile<<"Day2AoC.cpp\n";
+    outFile<<"Total: "<<total<<"\n";
+
+    //Timing purposes
+    auto stop = high_resolution_clock::now();
+    auto duration1 = duration_cast<milliseconds>(stop - start);
+    outFile<<"\n\nRuntime: \n"<<duration1.count()<<" milliseconds\n";
+    
+    auto duration2 = duration_cast<microseconds>(stop - start);
+    
+    outFile<<"Runtime: \n"<<duration2.count()<<" microseconds\n";
+    auto duration3 = duration_cast<nanoseconds>(stop - start);
+    outFile<<"Runtime: \n"<<duration3.count()<<" nanoseconds\n";
 }
