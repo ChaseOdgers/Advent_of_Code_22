@@ -15,29 +15,29 @@ int main(){
     inFile.open("day3_input.txt");
 
     //Declare variables
-    int total=0, total2=0, linecount= 0, groupCase=0;
+    int total=0, total2=0, linecount= 0, temp=0;
     std::string line, half1, half2, groupOfElves[2];
     std::vector<char> commonLetter;
 
-
-    //Find letters in string that are in both compartments, add values to total
+    //Read in line by line
     while (std::getline(inFile, line)){
 
-        //Part 1
-        half1 = line.substr(0,line.size()/2);
-        half2 = line.substr(line.size()/2,line.size());
-        for(auto i:half2){
-            if(half1.find_first_of(i) != std::string::npos){
-                if(int(i)-96 <0){ total+=int(i)-38; }
-                else{ total+=int(i)-96; }
-                break;
-            }
-        }
+       // Part 1
+        // half1 = line.substr(0,line.size()/2);
+        // half2 = line.substr(line.size()/2,line.size());
+        // for(auto i:half2){
+        //     if(half1.find_first_of(i) != std::string::npos){
+        //         if(int(i)-96 <0){ total+=int(i)-38; }
+        //         else{ total+=int(i)-96; }
+        //         break;
+        //     }
+        // }
 
         //Part 2
-        if(linecount%3 < 2){ groupOfElves[linecount%3] = line; }
+        temp = linecount%3;
+        if(temp < 2){ groupOfElves[temp] = line; }
 
-        if(linecount%3 == 2){
+        if(temp == 2){
             for(auto letter:groupOfElves[0]){
                 //Add the common letter between 2 first strings to vector 
                 if(groupOfElves[1].find_first_of(letter) != std::string::npos){
@@ -58,10 +58,9 @@ int main(){
         linecount++;
     }
 
-    std::cout<<"Total: "<<total<<std::endl;
-    std::cout<<"Total 2: "<<total2<<std::endl;
+    std::cout<<"Part 2 Total: "<<total2<<std::endl;
 
     auto stop = high_resolution_clock::now();
     auto duration1 = duration_cast<microseconds>(stop - start);
-    std::cout<<"\nRuntime:\n."<<duration1.count()<<" milliseconds\n";
+    std::cout<<"\nRuntime:\n"<<duration1.count()<<" microseconds\n";
 }
