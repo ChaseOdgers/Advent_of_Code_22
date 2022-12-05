@@ -3,7 +3,7 @@
 #include <istream>
 #include <iterator>
 #include <chrono>
-using namespace std;
+
 
 string readFile2(const string &fileName)
 {
