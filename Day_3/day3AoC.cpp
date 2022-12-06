@@ -23,15 +23,15 @@ int main(){
     while (std::getline(inFile, line)){
 
        // Part 1
-        // half1 = line.substr(0,line.size()/2);
-        // half2 = line.substr(line.size()/2,line.size());
-        // for(auto i:half2){
-        //     if(half1.find_first_of(i) != std::string::npos){
-        //         if(int(i)-96 <0){ total+=int(i)-38; }
-        //         else{ total+=int(i)-96; }
-        //         break;
-        //     }
-        // }
+        half1 = line.substr(0,line.size()/2);
+        half2 = line.substr(line.size()/2,line.size());
+        for(auto i:half2){
+            if(half1.find_first_of(i) != std::string::npos){
+                if(int(i)-96 <0){ total+=int(i)-38; }
+                else{ total+=int(i)-96; }
+                break;
+            }
+        }
 
         //Part 2
         temp = linecount%3;

@@ -1,0 +1,65 @@
+Start...
+Loadtime: 
+0 milliseconds
+48
+65
+140
+i = 1 value is:  
+i = 2 value is:  
+i = 3 value is:  
+i = 4 value is: [
+Added: D col: 1 row: 0
+i = 6 value is: ]
+i = 7 value is:  
+i = 8 value is:  
+i = 9 value is:  
+i = 10 value is:  
+new line at: 11
+i = 11 value is: 
+
+i = 12 value is: [
+Added: N col: 1 row: 1
+i = 14 value is: ]
+i = 15 value is:  
+i = 16 value is: [
+Added: C col: 2 row: 1
+i = 18 value is: ]
+i = 19 value is:  
+i = 20 value is: [
+Added: Q col: 3 row: 1
+i = 22 value is: ]
+i = 23 value is:  
+i = 24 value is:  
+i = 25 value is:  
+new line at: 26
+i = 26 value is: 
+
+i = 27 value is: [
+Added: Z col: 1 row: 2
+i = 29 value is: ]
+i = 30 value is:  
+i = 31 value is: [
+Added: M col: 2 row: 2
+i = 33 value is: ]
+i = 34 value is:  
+i = 35 value is: [
+Added: P col: 3 row: 2
+i = 37 value is: ]
+new line at: 38
+i = 38 value is: 
+
+i = 39 value is: [
+Added: Z col: 1 row: 3
+i = 41 value is: ]
+i = 42 value is:  
+i = 43 value is: [
+Added: M col: 2 row: 3
+i = 45 value is: ]
+i = 46 value is:  
+i = 47 value is: [
+
+
+Runtime: 
+0 milliseconds
+Runtime: 
+708 microseconds

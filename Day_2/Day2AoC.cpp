@@ -25,7 +25,7 @@ int main(){
             
             //a(rock)y(rock) +1 +3
             if(line == "A Y"){
-                    total += 4;
+                total += 4;
             }
 
             //a(rock)z(paper) +2 +6
@@ -40,17 +40,17 @@ int main(){
 
             //b(paper)y(paper) +2 +3
             if(line == "B Y"){
-                    total += 5;
+                total += 5;
             }
 
             //b(paper)z(scissors) +3 +6
             if(line == "B Z"){
-                    total += 9;
+                total += 9;
             }
 
             //c(scissors)x(paper) +2 +0
             if(line == "C X"){
-                    total += 2;
+                total += 2;
             }
 
             //c(scissors)y(scissors) +3 +3
