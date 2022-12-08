@@ -7,9 +7,9 @@
 using namespace std::chrono;
 using namespace std;
 
-vector<string> loadInto2dVec(string input){
+vector<int> loadInto2dVec(string input){
     string line;
-    std::vector<string> vec;
+    std::vector<int> vec;
     ifstream in;
     in.open(input);
     while(getline(in,line)){
@@ -18,7 +18,7 @@ vector<string> loadInto2dVec(string input){
     return vec;
 }
 
-void printBoard(vector<string> vec){
+void printBoard(vector<int> vec){
     int flag = -1;
     for(int row=0; row<vec.size(); row++){
         cout<<"row | "<<row<<" | ";
@@ -29,13 +29,13 @@ void printBoard(vector<string> vec){
     }
 }
 
-vector<string> markEdges(vector<string> vec){
-    vector<string> answerKeyEdge=vec;
+vector<int> markEdges(vector<int> vec){
+    vector<int> answerKeyEdge=vec;
     for(int row=0; row<vec.size(); row++){
         for(int col=0; col<vec[row].size(); col++){
             //mark all edges as visible
             if((row == 0)||(col == 0)||(row == vec.size()-1)||(col== vec[row].size()-1)){
-                answerKeyEdge[row][col] = 'v';
+                answerKeyEdge[row][col] = -1;
             }
             else{
                 answerKeyEdge[row][col] = vec[row][col];
@@ -45,9 +45,9 @@ vector<string> markEdges(vector<string> vec){
     return answerKeyEdge;
 }
 
-vector<string> markLeft(vector<string> vec){
-    vector<string> answerKeyLeft=vec;
-    int temp;
+vector<int> markLeft(vector<int> vec){
+    vector<int> answerKeyLeft=vec;
+    int temp, int1, int2;
     for(int row=0; row<vec.size(); row++){
         for(int col=0; col<vec[row].size(); col++){
             if((row == 0)||(col == 0)||(row == vec.size()-1)||(col== vec[row].size()-1)){
@@ -55,7 +55,10 @@ vector<string> markLeft(vector<string> vec){
 
             else{
                 for(int i=0; i<col; i++){
-                    if(vec[row][i] > vec[row][col]){
+                    int1 = vec[row][i];
+                    int2 = vec[row][col];
+                    cout<<"1: "<<int1<<" 2: "<<int2;
+                    if(int1 > int2){
                         vec[row][col] = 'b';
                     }
                 }
@@ -70,12 +73,12 @@ int main(int argc, char *argv[]) {
     auto start = high_resolution_clock::now();
 
     //-----LOAD DATA
-    vector<string> vec = loadInto2dVec(argv[1]);
-    vector<string> answerKeyLeft = vec;
-    vector<string> answerKeyRight = vec;
-    vector<string> answerKeyUp = vec;
-    vector<string> answerKeyDown = vec;
-    vector<string> answerKeyEdge = vec;
+    vector<int> vec = loadInto2dVec(argv[1]);
+    vector<int> answerKeyLeft = vec;
+    vector<int> answerKeyRight = vec;
+    vector<int> answerKeyUp = vec;
+    vector<int> answerKeyDown = vec;
+    vector<int> answerKeyEdge = vec;
     char surround;
     int temp;
 //////////////////////////////////////////////////////////////////////////
@@ -84,17 +87,17 @@ int main(int argc, char *argv[]) {
     // cout<<"----------------------"<<endl;
 
 
-    // answerKeyEdge = markEdges(vec);
-    // cout<<"---------------------"<<endl;
-    // cout<<"Edges      0 1 2 3 4 "<<endl;
-    // cout<<"---------------------"<<endl;
-    // printBoard(answerKeyEdge);
+    answerKeyEdge = markEdges(vec);
+    cout<<"---------------------"<<endl;
+    cout<<"Edges      0 1 2 3 4 "<<endl;
+    cout<<"---------------------"<<endl;
+    printBoard(answerKeyEdge);
 
-    answerKeyLeft = markLeft(vec);
-    cout<<"---------------------"<<endl;
-    cout<<"Left       0 1 2 3 4 "<<endl;
-    cout<<"---------------------"<<endl;
-    printBoard(answerKeyLeft);
+    // answerKeyLeft = markLeft(vec);
+    // cout<<"---------------------"<<endl;
+    // cout<<"Left       0 1 2 3 4 "<<endl;
+    // cout<<"---------------------"<<endl;
+    // printBoard(answerKeyLeft);
     // for(int row=0; row<vec.size(); row++){
     //     for(int col=0; col<vec[row].size(); col++){
     //         //mark all edges as visible
