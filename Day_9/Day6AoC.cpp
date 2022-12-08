@@ -1,8 +1,10 @@
 #include <chrono>
 #include <fstream>
 #include <iostream>
-#include <stack>
+#include <deque>
 #include <vector>
+#include <string>
+#include <iterator>
 using namespace std::chrono;
 using namespace std;
 
@@ -24,6 +26,7 @@ std::string binaryFileInput(std::string inputText){
     return fileAsAString;
 }
 
+
 int main(int argc, char *argv[]) {
 
     //Designate results destination
@@ -40,39 +43,50 @@ int main(int argc, char *argv[]) {
     auto endLoad = high_resolution_clock::now();
     auto durationLoad = duration_cast<milliseconds>(endLoad - start);
     outFile<<"Loadtime: \n"<<durationLoad.count()<<" milliseconds\n";
-//////////////////////////////////////////////////////////////////////////    
+//////////////////////////////////////////////////////////////////////////
     
-    //New vector to hold our stacks
+    ifstream in(argv[1]);
+    int foundAnsFlag=-1, ansAt=-1;
+    string stringIn = binaryFileInput(argv[1]);
 
-    int colIndex=0, rowIndex=0;
-    //for every char in the input file
-    // for(int i=0; i<inputAsAString.size(); i++){
-    //     if()
-    // }
+    string::iterator headPtr = stringIn.begin();
+    string::iterator temp, temp2;
 
-    // else{
-    //     colIndex++;
-    //     i+3; // this accounts for the for loop adding one which will be at the next char
-    // }
-    std::vector<vector<char>> vectorOfStacks;
 
-    int i=1, fullyLoaded = -1;
 
-    int endOfStackInput = inputAsAString.find_first_of('1')-4, 
-        startOfInstructionInput = inputAsAString.find_first_of('m'),
-        endOfFile = inputAsAString.size();
-
-    for(int i=1; i<endOfStackInput; i++){
-        if(inputAsAString[i]=='\n'){
-            vectorOfStacks.push_back(new std::vector<char>);
+    for(int i=1; i<stringIn.size(); i++){
+        headPtr++;
+        temp = headPtr;
+        //Check for match in previous 3
+        cout<<i<<" headPtr ["<<*headPtr<<"]"<<endl;
+        for(int j=0; j<3; j++){
+            temp--;
+            cout<<"\t\t"<<j<<" "<<*temp;
+            if(temp == stringIn.begin()){
+                cout<<" -BREAK, start"<<endl;
+                break;
+            }
+            else if(*temp==*headPtr){
+                cout<<"- BREAK, match"<<endl;
+                headPtr++;
+                i+=(3-j);
+                break;
+            }
+            else{
+                if(j==2){
+                    foundAnsFlag = 1;
+                    ansAt = i;
+                }
+            }
+            cout<<endl;
         }
-
-        if(isalpha(inputAsAString[i])){
-            outFile<<"Added: "<<inputAsAString[i]<<" col: "<<colIndex<<" row: "<<rowIndex<<endl;
-            vectorOfStacks.back()->push(inputAsAString[i]);
+        if(foundAnsFlag>0){
+            cout<<"\t\t\t\t\tANS: "<<ansAt<<endl;
+            break;
         }
-
     }
+
+    
 
 /////////////////////////////////////////////////////////////////////////
     //Stop timer and print results
