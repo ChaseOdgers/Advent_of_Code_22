@@ -7,167 +7,215 @@
 using namespace std::chrono;
 using namespace std;
 
-vector<int> loadInto2dVec(string input){
-    string line;
-    std::vector<int> vec;
+vector<vector<int>> loadVec(string input){
     ifstream in;
+    vector<vector<int>> vec;
     in.open(input);
-    while(getline(in,line)){
-        vec.push_back(line);
+    string line;
+    vector<int> tempVec;
+    char c;
+    int temp,row=0,col=0;
+    vec.push_back(tempVec);
+    while(in.get(c)){
+        temp = int(c)-48;
+        if(temp == -38){
+            vec.push_back(tempVec);
+            row++;
+        }
+        else{
+            vec[row].push_back(temp);
+        }
     }
     return vec;
 }
 
-void printBoard(vector<int> vec){
-    int flag = -1;
-    for(int row=0; row<vec.size(); row++){
-        cout<<"row | "<<row<<" | ";
-        for(int col=0; col<vec[row].size(); col++){
-            cout<<" "<<vec[row][col];
+void printBoard(vector<vector<int>> vec){
+    cout<<"\t| col:";
+    for(int i=0; i<vec[0].size(); i++){
+        cout<<"\t"<<i;
+    }
+    cout<<endl;
+    cout<<"--------------------------------------------------------------"<<endl;
+    for(int i=0; i<vec.size(); i++){
+        cout<<"Row: "<<i<<"\t|";
+        for(int j=0; j<vec[i].size(); j++){
+            cout<<"\t"<<vec[i][j];
         }
         cout<<endl;
     }
 }
 
-vector<int> markEdges(vector<int> vec){
-    vector<int> answerKeyEdge=vec;
-    for(int row=0; row<vec.size(); row++){
-        for(int col=0; col<vec[row].size(); col++){
-            //mark all edges as visible
-            if((row == 0)||(col == 0)||(row == vec.size()-1)||(col== vec[row].size()-1)){
-                answerKeyEdge[row][col] = -1;
-            }
-            else{
-                answerKeyEdge[row][col] = vec[row][col];
-            }
-        }
-    }
-    return answerKeyEdge;
-}
+vector<vector<int>> genLeft(vector<vector<int>> vec,bool flag){
+    vector<vector<int>> leftBoard=vec;
 
-vector<int> markLeft(vector<int> vec){
-    vector<int> answerKeyLeft=vec;
-    int temp, int1, int2;
-    for(int row=0; row<vec.size(); row++){
-        for(int col=0; col<vec[row].size(); col++){
-            if((row == 0)||(col == 0)||(row == vec.size()-1)||(col== vec[row].size()-1)){
-            }
-
-            else{
-                for(int i=0; i<col; i++){
-                    int1 = vec[row][i];
-                    int2 = vec[row][col];
-                    cout<<"1: "<<int1<<" 2: "<<int2;
-                    if(int1 > int2){
-                        vec[row][col] = 'b';
+    if(flag == false){
+        for(int row=0; row<vec.size(); row++){
+            for(int col=0; col<vec[row].size(); col++){
+                for(int i=col-1; i>=0; i--){
+                    if(vec[row][i]>= vec[row][col]){
+                        leftBoard[row][col] = -1;
                     }
                 }
             }
         }
+        return leftBoard;
     }
-    return answerKeyLeft;
+
+    if(flag==true){
+        for(int row=0; row<vec.size(); row++){
+            for(int col=0; col<vec[row].size(); col++){
+                for(int i=col-1; i>=0; i--){
+                    if(vec[row][i]>= vec[row][col]){
+                        leftBoard[row][col] = -1;
+                    }
+                }
+            }
+        }
+        return leftBoard;        
+    }
+}
+
+vector<vector<int>> genRight(vector<vector<int>> vec,bool flag){
+    vector<vector<int>> rightBoard=vec;
+
+    if(flag == false){
+        for(int row=0; row<vec.size(); row++){
+            for(int col=0; col<vec[row].size(); col++){
+                for(int i=col+1; i<vec[row].size(); i++){
+                    if(vec[row][i] >= vec[row][col]){
+                        rightBoard[row][col] = -1;
+                    }
+                } 
+            }
+        }
+        return rightBoard;
+    }
+
+    if(flag==true){
+        for(int row=0; row<vec.size(); row++){
+            for(int col=0; col<vec[row].size(); col++){
+                for(int i=col+1; i<vec[row].size(); i++){
+                    if(vec[row][i] >= vec[row][col]){
+                        rightBoard[row][col] = -1;
+                    }
+                } 
+            }
+        }
+        return rightBoard;        
+    }
+}
+
+vector<vector<int>> genUp(vector<vector<int>> vec,bool flag){
+    vector<vector<int>> upBoard=vec;
+    
+    if(flag == false){
+        for(int row=0; row<vec.size(); row++){
+            for(int col=0; col<vec[row].size(); col++){
+                for(int i=row-1; i>=0; i--){
+                    if(vec[i][col] >= vec[row][col]){
+                        upBoard[row][col] = -1;
+                    }
+                }
+            }
+        }
+        return upBoard;
+    }
+
+    if(flag==true){
+        for(int row=0; row<vec.size(); row++){
+            for(int col=0; col<vec[row].size(); col++){
+                for(int i=row-1; i>=0; i--){
+                    if(vec[i][col] >= vec[row][col]){
+                        upBoard[row][col] = -1;
+                    }
+                }
+            }
+        }
+        return upBoard;
+    }
+}
+
+vector<vector<int>> genDown(vector<vector<int>> vec,bool flag){
+    vector<vector<int>> downBoard=vec;
+    int distance=0;
+    
+    if(flag == false){
+        for(int row=0; row<vec.size(); row++){
+            for(int col=0; col<vec[row].size(); col++){
+                for(int i=row+1; i<vec.size(); i++){
+                    if(vec[i][col] >= vec[row][col]){
+                        downBoard[row][col] = -1;
+                    }
+                }
+            }
+        }
+        return downBoard;
+    }
+
+    if(flag==true){
+        for(int row=0; row<vec.size(); row++){
+            for(int col=0; col<vec[row].size(); col++){
+                for(int i=row+1; i<vec.size(); i++){
+                    if(vec[i][col] >= vec[row][col]){
+                        downBoard[row][col] = -distance;
+                    }
+                }
+                distance =0;
+            }
+        }
+        return downBoard;
+    }
 }
 
 int main(int argc, char *argv[]) {
     //Start Timer
     auto start = high_resolution_clock::now();
 
-    //-----LOAD DATA
-    vector<int> vec = loadInto2dVec(argv[1]);
-    vector<int> answerKeyLeft = vec;
-    vector<int> answerKeyRight = vec;
-    vector<int> answerKeyUp = vec;
-    vector<int> answerKeyDown = vec;
-    vector<int> answerKeyEdge = vec;
-    char surround;
-    int temp;
 //////////////////////////////////////////////////////////////////////////
 
-    // printBoard(vec);
-    // cout<<"----------------------"<<endl;
+    vector<vector<int>> vec = loadVec(argv[1]);
+    vector<vector<int>> leftBoard;
+    vector<vector<int>> rightBoard;
+    vector<vector<int>> upBoard;
+    vector<vector<int>> downBoard;
+    vector<vector<int>> visible = vec;
 
+    leftBoard = genLeft(vec,1);
+    rightBoard = genRight(vec,1);
+    upBoard = genUp(vec,1);
+    downBoard = genDown(vec,true);
+    printBoard(downBoard);
 
-    answerKeyEdge = markEdges(vec);
-    cout<<"---------------------"<<endl;
-    cout<<"Edges      0 1 2 3 4 "<<endl;
-    cout<<"---------------------"<<endl;
-    printBoard(answerKeyEdge);
+    int visCount=0;
 
-    // answerKeyLeft = markLeft(vec);
-    // cout<<"---------------------"<<endl;
-    // cout<<"Left       0 1 2 3 4 "<<endl;
-    // cout<<"---------------------"<<endl;
-    // printBoard(answerKeyLeft);
-    // for(int row=0; row<vec.size(); row++){
-    //     for(int col=0; col<vec[row].size(); col++){
-    //         //mark all edges as visible
-    //         if((row == 0)||(col == 0)||(row == vec.size()-1)||(col== vec[row].size()-1)){
-    //             answerKeyEdge[row][col] = 'v';
-    //         }
-    //         else{
-    //             answerKeyEdge[row][col] = vec[row][col];
-    //         }
-    //         else{
-    //             //check left
-    //             for(int i=col; i>0; i--){
-    //                 temp = static_cast<int>(vec[row][i]);
-    //                 if(vec[row][col]>temp){
-    //                     cout<<"Tree at: [r"<<row<<"]"<<" [c"<<col<<"]\t ["<<vec[row][i]<<"]"<<endl;
-    //                     cout<<"\t...blocked by [r"<<row<<"] [c"<<i<<"] on left"<<endl;
-    //                     answerKey[row][col] = 'z';
-    //                 }
-    //                 else{
-    //                     answerKey[row][col] = 'b';
-    //                 }
-    //             }
-                //check right
-                // for(int i=col; i<vec[row].size(); i++){
-                //     temp = static_cast<int>(vec[row][i]);
-                //     if(vec[row][col]>temp){
-                //         cout<<"Tree at: [r"<<row<<"]"<<" [c"<<col<<"]\t ["<<vec[row][i]<<"]"<<endl;
-                //         cout<<"\t...blocked by [r"<<row<<"] [c"<<i<<"] on left"<<endl;
-                //         answerKey[row][col] = 'v';
-                //     }
-                //     else{
-                //         answerKey[row][col] = 'b';
-                //     }
-                // }
-                //check down 
-                // for(int i=row; i<vec.size(); i++){
-                //     temp = static_cast<int>(vec[i][col]);
-                //     if(vec[i][col]>temp){
-                //         cout<<"Tree at: [r"<<row<<"]"<<" [c"<<col<<"]\t ["<<vec[row][i]<<"]"<<endl;
-                //         cout<<"\t...blocked by [r"<<row<<"] [c"<<i<<"] on left"<<endl;
-                //         answerKey[row][col] = '';
-                //     }
-                //     else{
-                //         answerKey[row][col] = 'b';
-                //     }
-                // }
-                //check down
-                // for(int i=row; i>0; i--){
-                //     temp = static_cast<int>(vec[i][col]);
-                //     if(vec[i][col]>temp){
-                //         cout<<"Tree at: [r"<<row<<"]"<<" [c"<<col<<"]\t ["<<vec[row][i]<<"]"<<endl;
-                //         cout<<"\t...blocked by [r"<<row<<"] [c"<<i<<"] on left"<<endl;
-                //         answerKey[row][col] = 'v';
-                //     }
-                //     else{
-                //         answerKey[row][col] = 'b';
-                //     }
-                // }
+    for(int row=0; row<vec.size(); row++){
+        for(int col=0; col<vec[row].size(); col++){
+            if(leftBoard[row][col] >= 0){
+                visible[row][col] = -1;
+            }
+            if(rightBoard[row][col] >= 0){
+                visible[row][col] = -1;
+            }
+            if(upBoard[row][col] >= 0){
+                visible[row][col] = -1;    
+            }
+            if(downBoard[row][col] >= 0){
+                visible[row][col] = -1;
+            }
+        }
+    }
 
-    // cout<<"\n---------------------"<<endl;
-    // cout<<"Input      0 1 2 3 4 "<<endl;
-    // cout<<"---------------------"<<endl;
-    // printBoard(vec);
+    for(int row=0; row<vec.size(); row++){
+        for(int col=0; col<vec[row].size(); col++){
+            {
+                if(visible[row][col]==-1){
+                    visCount++;
+                }
+            }
+        }
+    }
 
-    // cout<<"\n\n---------------------"<<endl;
-    // cout<<"Output     0 1 2 3 4 "<<endl;
-    // cout<<"---------------------"<<endl;
-    // printBoard(answerKey);
-    // cout<<"---------------------"<<endl;
-
+    cout<<"\n\nVisible-\t"<<visCount<<endl;
 
 /////////////////////////////////////////////////////////////////////////
     //Stop timer and print results
