@@ -1,9 +1,6 @@
-Start...
-Loadtime: 
-0 milliseconds
 
 
 Runtime: 
 0 milliseconds
 Runtime: 
-282 microseconds
+205 microseconds
