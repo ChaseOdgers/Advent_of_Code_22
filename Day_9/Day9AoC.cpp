@@ -1,56 +1,29 @@
-#include <chrono>
-#include <fstream>
-#include <iostream>
-#include <vector>
-#include <string>
-#include <iterator>
-using namespace std::chrono;
-using namespace std;
+#include "day9.hpp"
 
-vector<tuple<char,int>> loadvec(string fileName){
-    ifstream in;
-    in.open(fileName);
-    vector<tuple<char, int>> vec;
-    char c;
-    int i;
-    string line;
-    while(getline(in,line)){
-        c = line[0];
-        i = atoi(&line[2]);
-        vec.push_back(make_tuple(c,i));
+int main(int argc, char* argv[]) {
+
+    if(argc<2){
+        cout<<"Not enough arguments entered"<<endl;
+        return 0;
     }
-    return vec;
-}
 
-void printVec(vector<tuple<char,int>> vec){
-    for(const auto & i:vec){
-        cout<<"char: "<<get<0>(i)<<" int: "<<get<1>(i)<<endl;
-    }
-}
+    //argv[1] is input file, argv[2] is mode flag
+    //argv[2] (mode) = 0 no print, 1 just moves, 2 verbose
+    Day9 obj(argv[1],*argv[2]);
 
-void updateLocation(char c, int i){
-    cout<<"Char: "<<c<<" Int: "<<i<<endl;
-}
+    //Load all the moves from the file input
+    obj.loadvec();
 
-int main(int argc, char *argv[]) {
-    //Timer Start
-    std::ofstream outFile;
-    outFile.open("results.txt");
-    auto start = high_resolution_clock::now();
-//////////////////////////////////////////////////////////////////////////
- 
-    vector<tuple<char, int>> vec = loadvec(argv[1]);
-    printVec(vec);
-    for(const auto & i:vec){
-        updateLocation(get<0>(i),get<1>(i));
-    }
-/////////////////////////////////////////////////////////////////////////
-    //Stop timer and print results
-    auto stop = high_resolution_clock::now();
-    auto duration1 = duration_cast<milliseconds>(stop - start);
-    outFile<<"\n\nRuntime: \n"<<duration1.count()<<" milliseconds\n";
-    auto duration2 = duration_cast<microseconds>(stop - start);    
-    outFile<<"Runtime: \n"<<duration2.count()<<" microseconds\n";
+    //load a vector<vector<char>> with '-' that will track moves and answers
+    obj.loadBoards();
+    
+    //Process the moves from vec, updating boards & printing at each move
+    obj.processVec();
+
+    //Print the positions that T visited
+    obj.printAnsBoard();
+
+    cout<<"Tail visited: "<<obj.getTailVisited()<<" positions"<<endl;
 
     return 0;
 }
