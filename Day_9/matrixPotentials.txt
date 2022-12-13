@@ -1,0 +1,80 @@
+1: {{T, -, -},
+    {-, H, -},
+    {-, -, -}}
+    case:
+        colT < colH,
+        rowT > rowH
+        T should:
+            D - T decROW, T incCOL
+            R - T decROW, T incCOL
+
+2: {{-, T, -},
+    {-, H, -},
+    {-, -, -}}
+    case:
+        colT = colH,
+        rowT > rowH
+        T should:
+            D - T decROW
+
+3: {{-, -, T},
+    {-, H, -},
+    {-, -, -}}
+    case:
+        colT > colH,
+        rowT > rowH
+            D - T decROW, T decCOl
+            L - T decROW, T decCOL
+
+4: {{-, -, -},
+    {T, H, -},
+    {-, -, -}}
+    case:
+        colT < colH,
+        rowT = rowH
+            R - T incCOL
+
+5: {{-, -, -},
+    {-, H&t, -},
+    {-, -, -}}
+    case:
+        colT = colH,
+        rowT = rowH
+            U - T stay
+            D - T stay
+            L - T stay
+            R - T stay
+
+6: {{-, -, -},
+    {-, H, T},
+    {-, -, -}}
+    In case:
+        colT > colH,
+        rowT = rowH
+            L - T decCOL
+
+7: {{-, -, -},
+    {-, H, -},
+    {T, -, -}}
+    In case:
+    colT < colH,
+    rowT < rowH
+        U - T incCOL, T incROW
+        R - T incCOL, T incROW
+
+8: {{-, -, -},
+    {-, H, -},
+    {-, T, -}}
+    In case:
+    colT = colH,
+    rowT < rowH
+        U - T incROW
+
+9: {{-, -, -},
+    {-, H, -},
+    {-, -, T}}
+    In case:
+    colT > colH,
+    rowT < rowH
+        U - T incROW, T decCOL
+        L - T incROW, T decCOL
