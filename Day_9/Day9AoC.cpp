@@ -7,23 +7,18 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    //argv[1] is input file, argv[2] is mode flag
-    //argv[2] (mode) = 0 no print, 1 just moves, 2 verbose
-    Day9 obj(argv[1],*argv[2]);
+    /*
+        argv[1] is input file, argv[2] is mode flag
+        argv[2] (mode) = 0 no print, 1 just moves, 2 verbose
+    */
+    Day9 obj(argv[1]);
 
     //Load all the moves from the file input
-    obj.loadvec();
+    obj.run();
 
-    //load a vector<vector<char>> with '-' that will track moves and answers
-    obj.loadBoards();
-    
-    //Process the moves from vec, updating boards & printing at each move
-    obj.processVec();
+    cout<<"size: "<<obj.getSetSize()<<endl;
 
-    //Print the positions that T visited
-    obj.printAnsBoard();
-
-    cout<<"Tail visited: "<<obj.getTailVisited()<<" positions"<<endl;
+    // obj.print8();
 
     return 0;
 }

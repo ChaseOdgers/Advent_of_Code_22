@@ -3,15 +3,15 @@ make clean:
 
 run:
 	g++ -O3 -std=c++17 day9.hpp day9.cpp Day9Aoc.cpp -o day9solution
-	./day9solution input.txt 0
+	./day9solution input.txt
 
 debug:
 	g++ -O3 -std=c++17 day9.hpp day9.cpp Day9Aoc.cpp -o day9solution
-	./day9solution input.txt 1
+	./day9solution input.txt
 
 debug_V:
 	g++ -O3 -std=c++17 day9.hpp day9.cpp Day9Aoc.cpp -o day9solution
-	./day9solution input.txt 2
+	./day9solution input.txt
 
 make:
 	g++ -O3 -std=c++17 Day9Aoc.cpp -o day9solution
