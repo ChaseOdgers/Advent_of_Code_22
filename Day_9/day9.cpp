@@ -1,24 +1,61 @@
 #include "day9.hpp"
 
-//Class creation
+//Constructors/destructor
 Day9::Day9(){}
-Day9::Day9(string input){
+Day9::Day9(string input, int numTails){
     inFileName = input;
 
-    //Initialize the head vector
-    headROW.push_back(0);
-    headCOL.push_back(0);
+    //Initialize the head node
+    vector<int> row({0}), col({0});
 
-    //initialize the tail vector
-    tailROW.push_back(0);
-    tailCOL.push_back(0);
+    head = newNode(row, col,0);
+    head->visited.insert({0,0});
+
+    //Initialize the rest of the nodes (numTails - 1 bc we already created the first node)
+    Node *curr = head;
+    for(int i=1; i<numTails; i++){
+        curr->next = newNode(row,col,i);
+        curr->next->visited.insert({0,0});
+        curr = curr->next;
+    }
+
+/*
+    Print the number of nodes created
+    // int nodeCount=0;
+    // for (Node *curr = head; curr != nullptr; curr = curr->next){
+    //     cout<<nodeCount<<endl;
+    //     nodeCount++;
+    // }
+
+    //Initialize the head vector
+    // headROW.push_back(0);
+    // headCOL.push_back(0);
+
+    // //initialize the tail vector
+    // tail->row.push_back(0);
+    // tail->col.push_back(0);
 
     //mark start as visited
-    visited.insert({0,0});
-}
-Day9::~Day9(){}
+    // visited.insert({0,0});
 
-//Vector of tuple<int, char> - holds all the moves
+*/
+}
+/*
+    prevent leaving nodes in memory
+*/
+Day9::~Day9(){
+    Node* current = head;
+    while( current != nullptr ) {
+        Node* next = current->next;
+        delete current;
+        current = next;
+    }
+}
+
+/*
+    Run reads line by line from argv[1] in main
+    - calls respective move(left/right/up/down) with the ammount of spaces the head is to move
+*/
 void Day9::run(){
     ifstream in;
     in.open(inFileName);
@@ -28,87 +65,88 @@ void Day9::run(){
     while(getline(in,line)){
         c = line[0];
         i = stoi(line.substr(2));
-        switch(c){
-            case 'L':
-                moveLeft(i);
-                break;
-            case 'R':
-                moveRight(i);
-                break;
-            case 'D':
-                moveDown(i);
-                break;
-            case 'U':
-                moveUp(i);
-                break;
-        }
+        headUPDATE(c, i);
     }
 }
 
-//Handle moves from run()
-void Day9::moveLeft(int i){
-    //i is the ammount of spaces the head is to move
-    for(int moveCount=0; moveCount<i; moveCount++){
-        //increment the head 1 at a time
-        headROW.push_back(headROW.back());
-        headCOL.push_back(headCOL.back() - 1);
+void Day9::headUPDATE(char c, int i){
+    switch(c){
+        case 'L':
+            moveLeft(i);
+            break;
+        case 'R':
+            moveRight(i);
+            break;
+        case 'D':
+            moveDown(i);
+            break;
+        case 'U':
+            moveUp(i);
+            break;
+    }
+}
 
-        //increment the tail after the heads first move
-        newPrint(i, "Left", moveCount,1);
-        // if(moveCount>0){tailUPDATE("Left");}
-        tailUPDATE("Left");
-        newPrint(i, "Left", moveCount,2);
+/*
+move(left/right/up/down) take in int of spaces to move from run()
+    -moves head accordingly
+    -updates tail after the head moves
+*/
+void Day9::moveLeft(int i){
+    for(int moveCount=0; moveCount<i; moveCount++){
+
+        head->row.push_back(head->row.back());
+        head->col.push_back(head->col.back()-1);
+        head->visited.insert({head->row.back(),head->col.back()});
+
+        while(!tailUPDATE(head, head->next));
     }
 }
 void Day9::moveRight(int i){
-    //i is the ammount of spaces the head is to move
     for(int moveCount=0; moveCount<i; moveCount++){
-        //increment the head 1 at a time
-        headROW.push_back(headROW.back());
-        headCOL.push_back(headCOL.back() + 1);
 
-        //increment the tail after the heads first move
-        newPrint(i, "Right", moveCount,1);
-        // if(moveCount>0){tailUPDATE("Right");}
-        tailUPDATE("Right");
-        newPrint(i, "Right", moveCount,2);
+        head->row.push_back(head->row.back());
+        head->col.push_back(head->col.back()+1);
+        head->visited.insert({head->row.back(),head->col.back()});
+
+        while(!tailUPDATE(head, head->next));
+
     }
 }
 void Day9::moveUp(int i){
-    //i is the ammount of spaces the head is to move
     for(int moveCount=0; moveCount<i; moveCount++){
-        //increment the head 1 at a time
-        headROW.push_back(headROW.back() + 1);
-        headCOL.push_back(headCOL.back());
 
-        //increment the tail after the heads first move
-        newPrint(i, "Up", moveCount, 1);
-        // if(moveCount>0){tailUPDATE("Up");}
-        tailUPDATE("Up");
-        newPrint(i, "Up", moveCount, 2);
+        head->row.push_back(head->row.back() + 1);
+        head->col.push_back(head->col.back());
+        head->visited.insert({head->row.back(),head->col.back()});
+
+        while(!tailUPDATE(head, head->next));
     }
 }
 void Day9::moveDown(int i){
     for(int moveCount=0; moveCount<i; moveCount++){
-        //increment the head 1 at a time
-        headROW.push_back(headROW.back() - 1);
-        headCOL.push_back(headCOL.back());
 
-        //increment the tail after the heads first move
-        newPrint(i, "Down", moveCount, 1);
-        // if(moveCount>0){tailUPDATE("Down");}
-        tailUPDATE("Down");
-        newPrint(i, "Down", moveCount,2 );
+        head->row.push_back(head->row.back() - 1);
+        head->col.push_back(head->col.back());
+        head->visited.insert({head->row.back(),head->col.back()});
+
+        while(!tailUPDATE(head, head->next));
     }
 }
 
-void Day9::tailUPDATE(string move){
-    int rowH = headROW.back();
-    int colH = headCOL.back();
-    int rowT = tailROW.back();
-    int colT = tailCOL.back();
-
-    if((rowT) < (rowH - 1)){
+/*
+    Checks tails relation to head, moving tail if necessary
+    if tail moves the move is added to the unordered_set 'visited' 
+*/
+bool Day9::tailUPDATE(Node* prev, Node* tailIN){
+    if(tailIN == nullptr){
+        return true;
+    }
+    
+    else{
+        int rowH = prev->row.back();
+        int colH = prev->col.back();
+        int rowT = tailIN->row.back();
+        int colT = tailIN->col.back();
 
         /*  incROW
             {{H H H H H},
@@ -117,207 +155,188 @@ void Day9::tailUPDATE(string move){
             {x x x x x},
             {x x x x x};}
         */
-        tailROW.push_back(tailROW.back()+1);
+        if((rowT) < (rowH - 1)){
 
-        /*  incCOL 
-            {x x x H H}
-            {x x x x x}
-            {x x T x x}
-            {x x x x x}
-            {x x x x x}  */
-        if(colT < colH){
-            tailCOL.push_back(tailCOL.back()+1);
-            visited.insert({tailROW.back(),tailCOL.back()});
+            tailIN->row.push_back(tailIN->row.back()+1);
+
+            /*  incCOL 
+                {x x x H H}
+                {x x x x x}
+                {x x T x x}
+                {x x x x x}
+                {x x x x x}  */
+            if(colT < colH){
+                tailIN->col.push_back(tailIN->col.back()+1);
+                tailIN->visited.insert({tailIN->row.back(),tailIN->col.back()});
+            }
+
+            /*  decCOL
+                {H H x x x}
+                {x x x x x}
+                {x x T x x}
+                {x x x x x}
+                {x x x x x}    */        
+            else if(colT > colH){
+                tailIN->col.push_back(tailIN->col.back()-1);
+                tailIN->visited.insert({tailIN->row.back(),tailIN->col.back()});
+            }
+
+            /*  colT stay
+                {x x H x x}
+                {x x x x x}
+                {x x T x x}
+                {x x x x x}
+                {x x x x x}    */
+            else{
+                tailIN->col.push_back(tailIN->col.back());
+                tailIN->visited.insert({tailIN->row.back(),tailIN->col.back()});
+            }
         }
 
-        /*  decCOL
-            {H H x x x}
-            {x x x x x}
-            {x x T x x}
-            {x x x x x}
-            {x x x x x}    */        
-        else if(colT > colH){
-            tailCOL.push_back(tailCOL.back()-1);
-            visited.insert({tailROW.back(),tailCOL.back()});
-        }
-
-        /*  colT stay
-            {x x H x x}
-            {x x x x x}
-            {x x T x x}
-            {x x x x x}
-            {x x x x x}    */
-        else{
-            tailCOL.push_back(tailCOL.back());
-            visited.insert({tailROW.back(),tailCOL.back()});
-        }
-    }
-
-    else if(rowT > (rowH + 1)){
         /*  decROW 
             {x x x x x}
             {x x x x x}
             {x x T x x}
             {x x x x x}
             {x H H H x}     */        
-        tailROW.push_back(tailROW.back()-1);
+        else if(rowT > (rowH + 1)){
+            tailIN->row.push_back(tailIN->row.back()-1);
 
-        /*  incCOL
-            {x x x x x}
-            {x x x x x}
-            {x x T x x}
-            {x x x x x}
-            {x x x H x}    */
-        if(colT < colH){
-            tailCOL.push_back(tailCOL.back()+1);
-            visited.insert({tailROW.back(),tailCOL.back()});
+            /*  incCOL
+                {x x x x x}
+                {x x x x x}
+                {x x T x x}
+                {x x x x x}
+                {x x x H x}    */
+            if(colT < colH){
+                tailIN->col.push_back(tailIN->col.back()+1);
+                tailIN->visited.insert({tailIN->row.back(),tailIN->col.back()});
+            }
+
+            /*  decCOL
+                {x x x x x}
+                {x x x x x}
+                {x x T x x}
+                {x x x x x}
+                {x H x x x}    */
+            else if(colT > colH){
+                tailIN->col.push_back(tailIN->col.back()-1);
+                tailIN->visited.insert({tailIN->row.back(),tailIN->col.back()});
+            }
+
+            /*  colT stay
+                {x x x x x}
+                {x x x x x}
+                {x x T x x}
+                {x x x x x}
+                {x x H x x}    */
+            else{
+                tailIN->col.push_back(tailIN->col.back());
+                tailIN->visited.insert({tailIN->row.back(),tailIN->col.back()});
+            }
         }
 
-        /*  decCOL
-            {x x x x x}
-            {x x x x x}
-            {x x T x x}
-            {x x x x x}
-            {x H x x x}    */
-        else if(colT > colH){
-            tailCOL.push_back(tailCOL.back()-1);
-            visited.insert({tailROW.back(),tailCOL.back()});
-        }
-
-        /*  colT stay
-            {x x x x x}
-            {x x x x x}
-            {x x T x x}
-            {x x x x x}
-            {x x H x x}    */
-        else{
-            tailCOL.push_back(tailCOL.back());
-            visited.insert({tailROW.back(),tailCOL.back()});
-        }
-    }
-
-    else if(colT < (colH - 1)){
-        
         /*  incCOl
             {x x x x x}
             {x x x x H}
             {x x T x H}
             {x x x x H}
             {x x x x x}    */
-        tailCOL.push_back(tailCOL.back()+1);
+        else if(colT < (colH - 1)){
+            
+            tailIN->col.push_back(tailIN->col.back()+1);
 
-        /*  incROW 
-            {x x x x x}
-            {x x x x H}
-            {x x T x x}
-            {x x x x x}
-            {x x x x x}    */
-        if(rowT < rowH){   
-            tailROW.push_back(tailROW.back()+1);
-            visited.insert({tailROW.back(),tailCOL.back()});
+            /*  incROW 
+                {x x x x x}
+                {x x x x H}
+                {x x T x x}
+                {x x x x x}
+                {x x x x x}    */
+            if(rowT < rowH){   
+                tailIN->row.push_back(tailIN->row.back()+1);
+                tailIN->visited.insert({tailIN->row.back(),tailIN->col.back()});
+            }
+
+            /*  decROW
+                {x x x x x}
+                {x x x x x}
+                {x x T x x}
+                {x x x x H}
+                {x x x x x}    */
+            else if(rowT > rowH){
+                tailIN->row.push_back(tailIN->row.back()-1);
+                tailIN->visited.insert({tailIN->row.back(),tailIN->col.back()});
+            }
+
+            /*  rowT stay
+                {x x x x x}
+                {x x x x x}
+                {x x T x H}
+                {x x x x x}
+                {x x x x x}    */
+            else{
+                tailIN->row.push_back(tailIN->row.back());
+                tailIN->visited.insert({tailIN->row.back(),tailIN->col.back()});
+            }
         }
 
-        /*  decROW
-            {x x x x x}
-            {x x x x x}
-            {x x T x x}
-            {x x x x H}
-            {x x x x x}    */
-        else if(rowT > rowH){
-            tailROW.push_back(tailROW.back()-1);
-            visited.insert({tailROW.back(),tailCOL.back()});
-        }
-
-        /*  rowT stay
-            {x x x x x}
-            {x x x x x}
-            {x x T x H}
-            {x x x x x}
-            {x x x x x}    */
-        else{
-            tailROW.push_back(tailROW.back());
-            visited.insert({tailROW.back(),tailCOL.back()});
-        }
-    }
-
-    else if(colT > (colH + 1)){
-        
         /*  decCOL    
-            {x x x x x}
-            {H x x x x}
-            {H x T x x}
-            {H x x x x}
-            {x x x x x}    */
-        tailCOL.push_back(tailCOL.back()-1);
+        {x x x x x}
+        {H x x x x}
+        {H x T x x}
+        {H x x x x}
+        {x x x x x}    */
+        else if(colT > (colH + 1)){
 
-        /*  incROW
-            {x x x x x}
-            {H x x x x}
-            {x x T x x}
-            {x x x x x}
-            {x x x x x}    */
-        if(rowT < rowH){
-            tailROW.push_back(tailROW.back()+1);
-            visited.insert({tailROW.back(),tailCOL.back()});
+            tailIN->col.push_back(tailIN->col.back()-1);
+
+            /*  incROW
+                {x x x x x}
+                {H x x x x}
+                {x x T x x}
+                {x x x x x}
+                {x x x x x}    */
+            if(rowT < rowH){
+                tailIN->row.push_back(tailIN->row.back()+1);
+                tailIN->visited.insert({tailIN->row.back(),tailIN->col.back()});
+            }
+
+            /*  decROW
+                {x x x x x}
+                {x x x x x}
+                {x x T x x}
+                {H x x x x}
+                {x x x x x}    */
+            else if(rowT > rowH){
+                tailIN->row.push_back(tailIN->row.back()-1);
+                tailIN->visited.insert({tailIN->row.back(),tailIN->col.back()});
+            }
+
+            /*  rowT stay
+                {x x x x x}
+                {x x x x x}
+                {H x T x x}
+                {x x x x x}
+                {x x x x x}    */
+            else{
+                tailIN->row.push_back(tailIN->row.back());
+                tailIN->visited.insert({tailIN->row.back(),tailIN->col.back()});
+            }
+        
         }
 
-        /*  decROW
-            {x x x x x}
-            {x x x x x}
-            {x x T x x}
-            {H x x x x}
-            {x x x x x}    */
-        else if(rowT > rowH){
-            tailROW.push_back(tailROW.back()-1);
-            visited.insert({tailROW.back(),tailCOL.back()});
-        }
+        else{}
 
-        /*  rowT stay
-            {x x x x x}
-            {x x x x x}
-            {H x T x x}
-            {x x x x x}
-            {x x x x x}    */
-        else{
-            tailROW.push_back(tailROW.back());
-            visited.insert({tailROW.back(),tailCOL.back()});
-        }
-    
-    }
-
-    else{}
-
-}
-
-void Day9::newPrint(int in, string move, int moveCount, int place){
-    if(place == 1){
-        if(moveCount == 0){cout<<endl<<move<<" "<<in<<endl;}
-        cout<<"\t"<<moveCount<<" - |Head r:"<<headROW.back()<<" c:"<<headCOL.back()<<" ";
-        cout<<" |Tail r:"<<tailROW.back()<<" c:"<<tailCOL.back()<<endl;
-    }
-    if(place == 2){
-        cout<<"\t\t\t          r:"<<tailROW.back()<<" c:"<<tailCOL.back()<<" <-updated"<<endl;
+        return (tailUPDATE(tailIN, tailIN->next));
     }
 }
 
-int Day9::getSetSize(){
-    return visited.size();
-}
-
-void Day9::print8()
-{ 
-  // Iterating over unordered set elements
-  for (auto currentPair : visited)
-  {
-    // Each element is a pair itself
-    pair<int, int> pr = currentPair;
-  
-    cout << "[ ";
-  
-    // Printing pair elements
-    cout << pr.first << "  " << 
-            pr.second;
-    cout << " ]";
-    cout << "\n";
-  }
+/*
+    returns the ammount of tail->visited spaces from unordered_set 'tail->visited'
+*/
+void Day9::printResults(){
+    for (Node *curr = head; curr != nullptr; curr = curr->next){
+        cout<<"\nnode: "<<curr->nodeNum<<endl;
+        cout<<"Node visited count: "<<curr->visited.size()<<endl;
+    }
 }

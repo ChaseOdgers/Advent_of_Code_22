@@ -4,22 +4,43 @@
 #include <vector>
 #include <fstream>
 #include <string>
-#include <set>
 #include <unordered_set>
 #include <iostream>
-#include <utility>
+#include <chrono>
+using namespace std::chrono;
 using namespace std;
+
 
 class Day9
 {
+    private:
+        struct hashFunction{
+            size_t operator()(const pair<int ,int> &x) const {
+                return x.first ^ x.second;
+            }
+        };
+
+        struct Node{
+            int nodeNum;
+            vector<int> row;
+            vector<int> col;
+            unordered_set<pair<int, int>,hashFunction> visited;
+
+            Node *next;
+
+        };
+
+        string inFileName;
+        Node* head,tail;
+        unordered_set<pair<int, int>,hashFunction> visited;
+
     public:
         Day9();
-        Day9(string input);
+        Day9(string input, int numTails);
         ~Day9();
 
-        void headUPDATE(int row, int col);
-
-        void tailUPDATE(string move);
+        void headUPDATE(char c, int i);
+        bool tailUPDATE(Node* head, Node* tail);
 
         void run();
 
@@ -28,27 +49,18 @@ class Day9
         void moveUp(int i);
         void moveDown(int i);
 
-        void newPrint(int in, string move, int moveCount,int place);
+        void printResults();
 
-        int getSetSize();
-
-        void print8();
-
-        struct hashFunction
+            // Helper function to create a new node
+        Node* newNode(const std::vector<int> &row, const std::vector<int> &col, int nodeNum)
         {
-            size_t operator()(const pair<int ,int> &x) const
-            {
-                return x.first ^ x.second;
-            }
-        };
-
-
-    private:
-        int m_value;
-        bool isFirstMove = true;
-        string inFileName;
-        vector<int> headROW,tailROW, headCOL,tailCOL;
-        unordered_set<pair<int, int>,hashFunction> visited;
+            Node *temp = new Node;
+            temp->nodeNum = nodeNum;
+            temp->row = row;
+            temp->col = col;
+            temp->next = nullptr;
+            return temp;
+        }
 };
 
-#endif // MYCLASS_H
+#endif
